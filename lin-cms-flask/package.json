@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "vue-splitpane": "^1.0.6"
+  }
+}
