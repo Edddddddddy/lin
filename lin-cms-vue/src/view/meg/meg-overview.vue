@@ -2,13 +2,10 @@
   <div class="container" v-if="!showEdit">
     <el-row gutter="20">
       <el-col class="meg-visual" :xs="24" :sm="16" :md="12" :lg="15">
-
         <el-row >
-
           <common-el-card :cardName="'meg可视化'"  :cardWidth="'900px'" :cardHeight="'600px'">
-
             <div>
-              <canvas id="smoothie-chart" width="600" height="200"></canvas>
+              <canvas id="smoothie-chart" width="700" height="400"></canvas>
             </div>
           </common-el-card>
         </el-row>
@@ -30,10 +27,11 @@
               :before-upload="beforeUpload"
               :on-success="handleSuccess"
             >
-              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+             <p>当前选区的文件为: {{ filePath }}</p>
+             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
               <!--            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
             </el-upload>
-            <p>文件路径: {{ filePath }}</p>
+
         </common-el-card>
 
       </el-col>
@@ -55,16 +53,37 @@ export default {
       fileList: [],
       filePath: '',
       // ---------------------smoothie
-      // smoothie: null,
+      smoothie: null,
       // timeSeries: null,
-
+      linCnt: [ 1, 2, 3, 4, 5, 6, 7, 8],
       lines: [],
       amplitudes: [],
       timeline: [],
-      timeSeries: [],
-      colors: [],
       megData: [],
-      options: null,
+      colors: [{ borderColor: 'rgba(112,185,252,1)', backgroundColor: 'rgba(112,185,252,1)' },
+        { borderColor: 'rgba(116,150,161,1)', backgroundColor: 'rgba(116,150,161,1)' },
+        { borderColor: 'rgba(162,86,178,1)', backgroundColor: 'rgba(162,86,178,1)' },
+        { borderColor: 'rgba(144,132,246,1)', backgroundColor: 'rgba(144,132,246,1)' },
+        { borderColor: 'rgba(138,219,229,1)', backgroundColor: 'rgba(138,219,229,1)' },
+        { borderColor: 'rgba(232,223,133,1)', backgroundColor: 'rgba(232,223,133,1)' },
+        { borderColor: 'rgba(148,159,177,1)', backgroundColor: 'rgba(148,159,177,1)' },
+        { borderColor: 'rgba(77,83,96,1)', backgroundColor: 'rgba(77,83,96,1)' }],
+      timeSeries: Array(8).fill(0).map(() => new TimeSeries()),
+      options: {
+        millisPerLine: 3000,
+        grid: {
+          fillStyle: '#333333',
+          strokeStyle: 'rgba(0,0,0,0.1)',
+          sharpLines: false,
+          verticalSections: 8,
+          borderVisible: true
+        },
+        labels: {
+          disabled: true
+        },
+        maxValue: 1,
+        minValue: 0,
+      },
 
       myCardName: '我的aa卡片',
 
@@ -85,37 +104,22 @@ export default {
     //   this.timeSeries.append(new Date().getTime(), Math.random() * 10000)
     // }, 1000)
 
-    // 创建8条线
-    this.options = { millisPerLine: 3000,
-      grid: {
-        fillStyle: '#333333',
-        strokeStyle: 'rgba(0,0,0,0.1)',
-        sharpLines: false,
-        verticalSections: 8,
-        borderVisible: true
-      },
-      labels: {
-        disabled: true
-      },
-      maxValue: 16,
-      minValue: 0 }
+    this.timeSeries = Array(8).fill(0).map(() => new TimeSeries())
+    this.smoothie = new SmoothieChart(this.options) //
+    this.timeSeries.forEach(line => {
+      this.smoothie.addTimeSeries(line, {
+        strokeStyle: 'rgb(0, 255, 0)',
+        lineWidth: 1
+      })
+    })
+    this.smoothie.streamTo(document.getElementById('smoothie-chart'), 1000)
 
-    this.lines = Array(8).fill(0).map(() => new TimeSeries())
-    this.timeSeries = new SmoothieChart(this.options)
-    this.addTimeSeriesLines() // lines加入timeSeries
-    this.colors = [{ borderColor: 'rgba(112,185,252,1)', backgroundColor: 'rgba(112,185,252,1)' },
-      { borderColor: 'rgba(116,150,161,1)', backgroundColor: 'rgba(116,150,161,1)' },
-      { borderColor: 'rgba(162,86,178,1)', backgroundColor: 'rgba(162,86,178,1)' },
-      { borderColor: 'rgba(144,132,246,1)', backgroundColor: 'rgba(144,132,246,1)' },
-      { borderColor: 'rgba(138,219,229,1)', backgroundColor: 'rgba(138,219,229,1)' },
-      { borderColor: 'rgba(232,223,133,1)', backgroundColor: 'rgba(232,223,133,1)' },
-      { borderColor: 'rgba(148,159,177,1)', backgroundColor: 'rgba(148,159,177,1)' },
-      { borderColor: 'rgba(77,83,96,1)', backgroundColor: 'rgba(77,83,96,1)' }]
-    this.megData = Array(8).fill(0).map(() => Array(100).fill(0))
-    this.appendTimeSeriesLines(this.megData) // data加入lines
+    // this.megData = Array(8).fill(0).map(() => Array(100).fill(0))
 
     setInterval(() => {
-      this.timeSeries.append(new Date().getTime(), Math.random() * 10000)
+      this.timeSeries.forEach((line, index) => {
+        line.append(new Date().getTime(), Math.random() * 0.1 + this.linCnt[index]* 0.1)
+      })
     }, 1000)
   },
   methods: {
