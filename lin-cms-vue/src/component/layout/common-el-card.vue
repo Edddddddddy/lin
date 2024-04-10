@@ -3,7 +3,6 @@
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
-<!--          <p>卡片名称</p>-->
           <span>{{ cardName }}</span>
 <!--          <el-button class="button" type="text">操作按钮</el-button>-->
         </div>

@@ -21,6 +21,7 @@ export default {
   },
   mounted() {
     document.getElementById('loader').style.display = 'none'
+
   },
 }
 </script>
