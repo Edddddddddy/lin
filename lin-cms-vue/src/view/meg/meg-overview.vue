@@ -54,13 +54,33 @@ export default {
       filePath: '',
       // ---------------------smoothie
       smoothie: null,
-      // timeSeries: null,
-      linCnt: [ 1, 2, 3, 4, 5, 6, 7, 8],
-      lines: [],
+      timeSeries: [],
+      linCnt: [],
+      colors: [],
+      options: null,
+      megData: [],
       amplitudes: [],
       timeline: [],
-      megData: [],
-      colors: [{ borderColor: 'rgba(112,185,252,1)', backgroundColor: 'rgba(112,185,252,1)' },
+
+      myCardName: '我的aa卡片',
+
+    }
+  },
+  computed: {},
+  watch: {},
+  mounted() {
+    // ---------------------smoothie chart
+    {
+      // this.smoothie = new SmoothieChart()
+      // this.timeSeries = new TimeSeries()
+      // this.smoothie.addTimeSeries(this.timeSeries, { strokeStyle: 'rgb(0, 255, 0)', lineWidth: 1 })
+      // this.smoothie.streamTo(document.getElementById('smoothie-chart'), 1000)
+      // // 模拟脑电数据
+      // setInterval(() => {
+      //   this.timeSeries.append(new Date().getTime(), Math.random() * 10000)
+      // }, 1000)
+      this.linCnt = [1, 2, 3, 4, 5, 6, 7, 8],
+      this.colors = [{ borderColor: 'rgba(112,185,252,1)', backgroundColor: 'rgba(112,185,252,1)' },
         { borderColor: 'rgba(116,150,161,1)', backgroundColor: 'rgba(116,150,161,1)' },
         { borderColor: 'rgba(162,86,178,1)', backgroundColor: 'rgba(162,86,178,1)' },
         { borderColor: 'rgba(144,132,246,1)', backgroundColor: 'rgba(144,132,246,1)' },
@@ -68,8 +88,8 @@ export default {
         { borderColor: 'rgba(232,223,133,1)', backgroundColor: 'rgba(232,223,133,1)' },
         { borderColor: 'rgba(148,159,177,1)', backgroundColor: 'rgba(148,159,177,1)' },
         { borderColor: 'rgba(77,83,96,1)', backgroundColor: 'rgba(77,83,96,1)' }],
-      timeSeries: Array(8).fill(0).map(() => new TimeSeries()),
-      options: {
+      this.timeSeries = Array(8).fill(0).map(() => new TimeSeries()),
+      this.options = {
         millisPerLine: 3000,
         grid: {
           fillStyle: '#333333',
@@ -84,43 +104,21 @@ export default {
         maxValue: 1,
         minValue: 0,
       },
-
-      myCardName: '我的aa卡片',
-
+      this.timeSeries = Array(8).fill(0).map(() => new TimeSeries())
+      this.smoothie = new SmoothieChart(this.options) //
+      this.timeSeries.forEach(line => {
+        this.smoothie.addTimeSeries(line, {
+          strokeStyle: 'rgb(0, 255, 0)',
+          lineWidth: 1
+        })
+      })
+      this.smoothie.streamTo(document.getElementById('smoothie-chart'), 1000)
+      setInterval(() => {
+        this.timeSeries.forEach((line, index) => {
+          line.append(new Date().getTime(), Math.random() * 0.1 + this.linCnt[index] * 0.1)
+        })
+      }, 1000)
     }
-  },
-  computed: {},
-  watch: {},
-  mounted() {
-    // this.addTimeSeriesLines()
-
-    // ---------------------smoothie
-    // this.smoothie = new SmoothieChart()
-    // this.timeSeries = new TimeSeries()
-    // this.smoothie.addTimeSeries(this.timeSeries, { strokeStyle: 'rgb(0, 255, 0)', lineWidth: 1 })
-    // this.smoothie.streamTo(document.getElementById('smoothie-chart'), 1000)
-    // // 模拟脑电数据
-    // setInterval(() => {
-    //   this.timeSeries.append(new Date().getTime(), Math.random() * 10000)
-    // }, 1000)
-
-    this.timeSeries = Array(8).fill(0).map(() => new TimeSeries())
-    this.smoothie = new SmoothieChart(this.options) //
-    this.timeSeries.forEach(line => {
-      this.smoothie.addTimeSeries(line, {
-        strokeStyle: 'rgb(0, 255, 0)',
-        lineWidth: 1
-      })
-    })
-    this.smoothie.streamTo(document.getElementById('smoothie-chart'), 1000)
-
-    // this.megData = Array(8).fill(0).map(() => Array(100).fill(0))
-
-    setInterval(() => {
-      this.timeSeries.forEach((line, index) => {
-        line.append(new Date().getTime(), Math.random() * 0.1 + this.linCnt[index]* 0.1)
-      })
-    }, 1000)
   },
   methods: {
 
