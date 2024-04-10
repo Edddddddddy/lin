@@ -21,6 +21,7 @@ import SourceCode from '@/component/base/source-code/source-code'
 import '@/assets/style/index.scss'
 import 'element-plus/dist/index.css'
 import '@/assets/style/realize/element-variable.scss'
+import '@/assets/style/common.scss'
 
 const app = createApp(App)
 

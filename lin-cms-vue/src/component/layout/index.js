@@ -5,5 +5,6 @@ import ReuseTab from './reuse-tab'
 import MenuTab from './menu-tab.vue'
 import BackTop from './back-top.vue'
 import User from './user.vue'
+import CommonElCard from './common-el-card.vue'
 
-export { NavBar, Sidebar, AppMain, ReuseTab, MenuTab, BackTop, User }
+export { NavBar, Sidebar, AppMain, ReuseTab, MenuTab, BackTop, User, CommonElCard }
