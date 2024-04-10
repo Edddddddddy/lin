@@ -1,37 +1,111 @@
 <template>
-  <div class="container" v-if="!showEdit">
-    <el-row gutter="20">
-      <el-col class="meg-visual" :xs="24" :sm="16" :md="12" :lg="15">
+  <div class="container"  v-if="!showEdit">
+    <el-row gutter="10px">
+<!--      第一列-->
+      <el-col class="meg-visual" span="18">
         <el-row >
-          <common-el-card :cardName="'meg可视化'"  :cardWidth="'900px'" :cardHeight="'600px'">
+          <common-el-card :cardName="'meg可视化'"  :cardWidth="'100%'" :cardHeight="'600px'">
             <div>
-              <canvas id="smoothie-chart" width="700" height="400"></canvas>
+              <canvas id="smoothie-chart" width="900" height="400"></canvas>
             </div>
           </common-el-card>
         </el-row>
 
-      </el-col>
-      <el-col class="sidebar"  :xs="24" :sm="8" :md="12" :lg="8">
-        <common-el-card :cardName="myCardName" :cardWidth="'400px'" :cardHeight="'600px'" >
-          <!-- 你的自定义内容 -->
-          <template #header>
-            <div class="card-header">
-              <span>{{ myCardName }}</span>
-            </div>
-          </template>
-           <el-upload
-              action="http://127.0.0.1:5000/v1/file/upload"
-              on-preview="handlePreview"
-              on-remove="handleRemove"
-              :file-list="fileList"
-              :before-upload="beforeUpload"
-              :on-success="handleSuccess"
-            >
-             <p>当前选区的文件为: {{ filePath }}</p>
-             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-              <!--            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
-            </el-upload>
+        <el-row gutter="10">
+          <el-col span="3">
+            <common-el-card  :cardName="'plt1'"  :cardWidth="'300px'">
+              <div>
+                <p>此处放图像</p>
+              </div>
+            </common-el-card>
+          </el-col>
 
+          <el-col span="3">
+            <common-el-card  :cardName="'plt2'" :cardWidth="'200px'">
+              <div>
+                <p>此处放图像</p>
+              </div>
+            </common-el-card>
+          </el-col>
+          <el-col span="3">
+            <common-el-card :cardName="'plt3'" :cardWidth="'200px'">
+              <div>
+                <p>此处放图像</p>
+              </div>
+            </common-el-card>
+          </el-col>
+        </el-row>
+      </el-col>
+
+<!--      第二列-->
+      <el-col class="sidebar" span="6" >
+        <common-el-card  :cardName="'设置'" :cardWidth="'100%'" :cardHeight="'100vh'" >
+          <!-- 你的自定义内容 -->
+          <div >
+            <el-row>
+              <div>
+                <el-row  style="margin-top: 7px">
+                  <el-button @click="show = !show">数据读取</el-button>
+                </el-row>
+
+                <div  style="margin-top: 7px">
+                  <el-collapse-transition>
+                    <div v-show="show" class="transition-box">
+                      <el-upload
+                        action="http://127.0.0.1:5000/v1/file/upload"
+                        on-preview="handlePreview"
+                        on-remove="handleRemove"
+                        :file-list="fileList"
+                        :before-upload="beforeUpload"
+                        :on-success="handleSuccess"
+                      >
+                       <p>当前选区的文件为: {{ filePath }}</p>
+                       <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                        <!--            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
+                      </el-upload>
+                    </div>
+                  </el-collapse-transition>
+                </div>
+              </div>
+
+            </el-row>
+            <el-row>
+              <div>
+                <el-row  style="margin-top: 7px">
+                  <el-button @click="show2 = !show2" >数据滤波</el-button>
+                </el-row>
+
+                <div  style="margin-top: 7px">
+                  <el-collapse-transition>
+                    <div v-show="show2" >
+                      <div class="transition-box">
+                        <p> 此处放滤波选项</p>
+                      </div>
+                    </div>
+                  </el-collapse-transition>
+                </div>
+              </div>
+            </el-row>
+            <el-row>
+              <div>
+                <el-row style="margin-top: 7px">
+                  <el-button @click="show3 = !show3">视图选择</el-button>
+                </el-row>
+
+                <div style="margin-top: 7px">
+                  <el-collapse-transition>
+                    <div v-show="show3" >
+                      <div class="transition-box">
+                        <el-checkbox v-model="checked1" label="脑地形图" size="large" />
+                        <el-checkbox v-model="checked2" label="热力图" size="large" />
+                      </div>
+                    </div>
+                  </el-collapse-transition>
+                </div>
+              </div>
+            </el-row>
+
+          </div>
         </common-el-card>
 
       </el-col>
@@ -42,6 +116,7 @@
 <script>
 import { SmoothieChart, TimeSeries } from 'smoothie'
 import { CommonElCard } from '@/component/layout'
+import { ref } from 'vue'
 
 export default {
   name: 'MegOverview',
@@ -50,6 +125,7 @@ export default {
   },
   data() {
     return {
+      activeNames: ['1'],
       fileList: [],
       filePath: '',
       // ---------------------smoothie
@@ -61,6 +137,11 @@ export default {
       megData: [],
       amplitudes: [],
       timeline: [],
+      show: ref(true),
+      show2: ref(true),
+      show3: ref(true),
+      checked1: ref(true),
+      checked2: ref(true),
 
       myCardName: '我的aa卡片',
 
@@ -176,8 +257,7 @@ export default {
   }
   .sidebar {
     padding: 0px 20px;
-    margin: 3px;
-
+    //margin: 3px;
   }
   .card-header {
     display: flex;
@@ -197,6 +277,12 @@ export default {
   .box-card {
     width: 480px;
   }
-
+  .transition-box {
+    width: 300px;
+    height: 100px;
+    border-radius: 4px;
+    text-align: center;
+    background-color:lightgray;
+  }
 }
 </style>
