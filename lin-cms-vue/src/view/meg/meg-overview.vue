@@ -2,11 +2,11 @@
   <div class="container"  v-if="!showEdit">
     <el-row gutter="10px">
 <!--      第一列-->
-      <el-col class="meg-visual" span="18">
+      <el-col class="meg-visual" span="10">
         <el-row >
           <common-el-card :cardName="'meg可视化'"  :cardWidth="'100%'" :cardHeight="'600px'">
             <div>
-              <canvas id="smoothie-chart" width="900" height="400"></canvas>
+              <canvas id="smoothie-chart" width="800" height="400"></canvas>
             </div>
           </common-el-card>
         </el-row>
@@ -15,31 +15,18 @@
           <el-col span="3">
             <common-el-card  :cardName="'plt1'"  :cardWidth="'300px'">
               <div>
-                <p>此处放图像</p>
+                <el-image style="width: 100px; height: 100px" :src="'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'" :fit="fit" />
               </div>
             </common-el-card>
           </el-col>
 
-          <el-col span="3">
-            <common-el-card  :cardName="'plt2'" :cardWidth="'200px'">
-              <div>
-                <p>此处放图像</p>
-              </div>
-            </common-el-card>
-          </el-col>
-          <el-col span="3">
-            <common-el-card :cardName="'plt3'" :cardWidth="'200px'">
-              <div>
-                <p>此处放图像</p>
-              </div>
-            </common-el-card>
-          </el-col>
+
         </el-row>
       </el-col>
 
 <!--      第二列-->
       <el-col class="sidebar" span="6" >
-        <common-el-card  :cardName="'设置'" :cardWidth="'100%'" :cardHeight="'100vh'" >
+        <common-el-card  :cardName="'设置'" :cardWidth="'300px'" :cardHeight="'100vh'" >
           <!-- 你的自定义内容 -->
           <div >
             <el-row>
@@ -143,7 +130,8 @@ export default {
       checked1: ref(true),
       checked2: ref(true),
 
-      myCardName: '我的aa卡片',
+      myCardName: '',
+
 
     }
   },
@@ -185,6 +173,7 @@ export default {
         maxValue: 1,
         minValue: 0,
       },
+
       this.timeSeries = Array(8).fill(0).map(() => new TimeSeries())
       this.smoothie = new SmoothieChart(this.options) //
       this.timeSeries.forEach(line => {
@@ -199,6 +188,11 @@ export default {
           line.append(new Date().getTime(), Math.random() * 0.1 + this.linCnt[index] * 0.1)
         })
       }, 1000)
+    }
+
+    // ---------------------imageURL
+    {
+
     }
   },
   methods: {

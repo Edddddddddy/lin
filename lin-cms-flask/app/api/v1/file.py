@@ -5,7 +5,7 @@ import uuid
 
 file_bp = Blueprint('file', __name__)
 
-UPLOAD_FOLDER = 'assets/megData'
+UPLOAD_FOLDER = 'static/megData'
 
 @file_bp.route('/upload', methods=['POST'])
 def upload_file():
