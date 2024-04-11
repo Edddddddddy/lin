@@ -13,14 +13,12 @@
 
         <el-row gutter="10">
           <el-col span="3">
-            <common-el-card  :cardName="'plt1'"  :cardWidth="'300px'">
-              <div>
-                <el-image style="width: 100px; height: 100px" :src="'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'" :fit="fit" />
+            <common-el-card  :cardName="'ICA'"  :cardWidth="'300px'">
+              <div id="qrcode" class="qrcodeBox" >
+                <img :src="'http://127.0.0.1:5000/assets/megData/ica_components.png'"/>
               </div>
             </common-el-card>
           </el-col>
-
-
         </el-row>
       </el-col>
 
@@ -131,7 +129,6 @@ export default {
       checked2: ref(true),
 
       myCardName: '',
-
 
     }
   },
