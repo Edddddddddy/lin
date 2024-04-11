@@ -16,6 +16,7 @@
             <common-el-card  :cardName="'ICA'"  :cardWidth="'300px'">
               <div id="qrcode" class="qrcodeBox" >
                 <img :src="'http://127.0.0.1:5000/assets/megData/ica_components.png'"/>
+                <p>{{testNum}}</p>
               </div>
             </common-el-card>
           </el-col>
@@ -102,6 +103,7 @@
 import { SmoothieChart, TimeSeries } from 'smoothie'
 import { CommonElCard } from '@/component/layout'
 import { ref } from 'vue'
+import axios from 'axios'
 
 export default {
   name: 'MegOverview',
@@ -117,9 +119,9 @@ export default {
       smoothie: null,
       timeSeries: [],
       linCnt: [],
-      colors: [],
+      // colors: [],
       options: null,
-      megData: [],
+      megData: {},
       amplitudes: [],
       timeline: [],
       show: ref(true),
@@ -127,8 +129,11 @@ export default {
       show3: ref(true),
       checked1: ref(true),
       checked2: ref(true),
-
+      setIntervalCnt: 0,
+      startTime: 0,
       myCardName: '',
+
+      testNum: 0,
 
     }
   },
@@ -145,51 +150,52 @@ export default {
       // setInterval(() => {
       //   this.timeSeries.append(new Date().getTime(), Math.random() * 10000)
       // }, 1000)
-      this.linCnt = [1, 2, 3, 4, 5, 6, 7, 8],
-      this.colors = [{ borderColor: 'rgba(112,185,252,1)', backgroundColor: 'rgba(112,185,252,1)' },
-        { borderColor: 'rgba(116,150,161,1)', backgroundColor: 'rgba(116,150,161,1)' },
-        { borderColor: 'rgba(162,86,178,1)', backgroundColor: 'rgba(162,86,178,1)' },
-        { borderColor: 'rgba(144,132,246,1)', backgroundColor: 'rgba(144,132,246,1)' },
-        { borderColor: 'rgba(138,219,229,1)', backgroundColor: 'rgba(138,219,229,1)' },
-        { borderColor: 'rgba(232,223,133,1)', backgroundColor: 'rgba(232,223,133,1)' },
-        { borderColor: 'rgba(148,159,177,1)', backgroundColor: 'rgba(148,159,177,1)' },
-        { borderColor: 'rgba(77,83,96,1)', backgroundColor: 'rgba(77,83,96,1)' }],
-      this.timeSeries = Array(8).fill(0).map(() => new TimeSeries()),
-      this.options = {
-        millisPerLine: 3000,
-        grid: {
-          fillStyle: '#333333',
-          strokeStyle: 'rgba(0,0,0,0.1)',
-          sharpLines: false,
-          verticalSections: 8,
-          borderVisible: true
-        },
-        labels: {
-          disabled: true
-        },
-        maxValue: 1,
-        minValue: 0,
-      },
 
-      this.timeSeries = Array(8).fill(0).map(() => new TimeSeries())
-      this.smoothie = new SmoothieChart(this.options) //
-      this.timeSeries.forEach(line => {
-        this.smoothie.addTimeSeries(line, {
-          strokeStyle: 'rgb(0, 255, 0)',
-          lineWidth: 1
+      // 获取数据
+      axios.get('http://localhost:5000/v1/file/sendData')
+        .then(response => {
+          this.megData = response.data
+          console.log(new Date().getTime())
+          this.linCnt = Array.from({ length: this.megData.ch_num }, (_, index) => index + 1),
+          this.timeSeries = Array(64).fill(0).map(() => new TimeSeries()),
+          this.options = {
+            millisPerLine: 0.001,
+            grid: {
+              fillStyle: '#333333',
+              strokeStyle: 'rgba(0,0,0,0.1)',
+              sharpLines: false,
+              verticalSections: this.megData.ch_num,
+              borderVisible: true
+            },
+            labels: {
+              disabled: true
+            },
+            maxValue: 1,
+            minValue: 0,
+            // millisPerPixel: 2,
+            // timestampFormatter: SmoothieChart.timeFormatter,
+          },
+          this.timeSeries = Array(64).fill(0).map(() => new TimeSeries())
+          this.smoothie = new SmoothieChart(this.options) //
+          this.timeSeries.forEach(line => {
+            this.smoothie.addTimeSeries(line, {
+              strokeStyle: 'rgb(0, 255, 0)',
+              lineWidth: 1
+            })
+          })
+          this.smoothie.streamTo(document.getElementById('smoothie-chart'), 1000)
+          this.startTime = new Date().getTime()
+          setInterval(() => {
+            this.timeSeries.forEach((line, index) => {
+              // line.append(new Date().getTime(), Math.random() * 0.1 + this.linCnt[index] * 0.01)
+              line.append(new Date().getTime(), this.megData.data[this.setIntervalCnt][index] + this.linCnt[index] * 0.01)
+              this.setIntervalCnt++
+            })
+          }, 1000)
         })
-      })
-      this.smoothie.streamTo(document.getElementById('smoothie-chart'), 1000)
-      setInterval(() => {
-        this.timeSeries.forEach((line, index) => {
-          line.append(new Date().getTime(), Math.random() * 0.1 + this.linCnt[index] * 0.1)
+        .catch(error => {
+          console.error(error)
         })
-      }, 1000)
-    }
-
-    // ---------------------imageURL
-    {
-
     }
   },
   methods: {
