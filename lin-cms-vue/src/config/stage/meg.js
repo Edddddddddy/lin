@@ -15,7 +15,7 @@ const bookRouter = {
       name: 'MegOverview',
       route: '/meg/overview',
       // filePath: 'view/meg/meg-overview.vue',
-      filePath: 'view/meg/meg-visualization.vue',
+      filePath: 'view/meg/meg-vis-test2.vue',
       inNav: true,
       icon: 'iconfont icon-add',
       isElementIcon: false,
