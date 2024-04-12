@@ -102,8 +102,10 @@
 <script>
 import { SmoothieChart, TimeSeries } from 'smoothie'
 import { CommonElCard } from '@/component/layout'
-import { ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios'
+import * as echarts from 'echarts'
+
 
 export default {
   name: 'MegOverview',
@@ -119,11 +121,10 @@ export default {
       smoothie: null,
       timeSeries: [],
       linCnt: [],
-      // colors: [],
       options: null,
       megData: {},
-      amplitudes: [],
       timeline: [],
+
       show: ref(true),
       show2: ref(true),
       show3: ref(true),
@@ -135,11 +136,28 @@ export default {
 
       testNum: 0,
 
+
+      countries: [
+        'Finland',
+        'France',
+        'Germany',
+        'Iceland',
+        'Norway',
+        'Poland',
+        'Russia',
+        'United Kingdom'
+      ],
+      datasetWithFilters: [],
+      seriesList: [],
+
+
+
     }
   },
   computed: {},
   watch: {},
   mounted() {
+
     // ---------------------smoothie chart
     {
       // this.smoothie = new SmoothieChart()
@@ -156,24 +174,25 @@ export default {
         .then(response => {
           this.megData = response.data
           console.log(new Date().getTime())
-          this.linCnt = Array.from({ length: this.megData.ch_num }, (_, index) => index + 1),
-          this.timeSeries = Array(64).fill(0).map(() => new TimeSeries()),
-          this.options = {
-            millisPerLine: 0.001,
-            grid: {
-              fillStyle: '#333333',
-              strokeStyle: 'rgba(0,0,0,0.1)',
-              sharpLines: false,
-              verticalSections: this.megData.ch_num,
-              borderVisible: true
-            },
-            labels: {
-              disabled: true
-            },
-            maxValue: 1,
-            minValue: 0,
-            // millisPerPixel: 2,
-            // timestampFormatter: SmoothieChart.timeFormatter,
+          {
+            this.linCnt = Array.from({ length: this.megData.ch_num }, (_, index) => index + 1),
+            this.timeSeries = Array(64).fill(0).map(() => new TimeSeries()),
+            this.options = {
+              millisPerLine: 0.001,
+              grid: {
+                fillStyle: '#333333',
+                strokeStyle: 'rgba(0,0,0,0.1)',
+                sharpLines: false,
+                verticalSections: this.megData.ch_num,
+                borderVisible: true
+              },
+              labels: {
+                disabled: true
+              },
+              maxValue: 1,
+              minValue: 0,
+              // millisPerPixel: 2,
+              // timestampFormatter: SmoothieChart.timeFormatter,
           },
           this.timeSeries = Array(64).fill(0).map(() => new TimeSeries())
           this.smoothie = new SmoothieChart(this.options) //
@@ -192,10 +211,18 @@ export default {
               this.setIntervalCnt++
             })
           }, 1000)
+          }
+
+          //——————————————————————echarts
+          {
+
+          }
         })
         .catch(error => {
           console.error(error)
         })
+
+
     }
   },
   methods: {
