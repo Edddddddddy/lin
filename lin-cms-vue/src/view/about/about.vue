@@ -3,10 +3,10 @@
     <div class="lin-info">
       <div class="lin-info-left">
         <div class="welcome">
-          <img src="../../assets/image/about/welcome.png" class="welcome-title" alt="" />
+          <div class="shadow-box" style="font-size: 28px; ">欢迎来到中国医科大学生物信息采集平台</div>
           <div class="subtitle">
-            <div class="guide">您还可以点击林间有风官方网站，查看更多作品</div>
-            <div class="link"><a href="https://www.talelin.com" target="_blank">https://talelin.com</a></div>
+            <div class="guide">多种生物信息采集</div>
+            <div class="guide"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;一站式服务</div>
           </div>
         </div>
         <img class="welcome-bg" src="../../assets/image/about/header-bg.png" alt="" />
@@ -17,35 +17,15 @@
             <div class="team-title">产品团队</div>
             <ul class="team-ul">
               <li>
-                <span class="shadow-box"> <i class="team-shadow"></i> </span> <span class="team-role">策划</span>
-                <span class="team-name">七月</span>
+                <span class="shadow-box"> <i class="team-shadow"></i> </span> <span class="team-role">单位</span>
+                <span class="team-name">中国医科大学生物医学工程专业</span>
               </li>
               <li>
-                <span class="shadow-box"> <i class="team-shadow"></i> </span> <span class="team-role">研发</span>
-                <span class="team-name">
-                  <ul v-if="!showTeam">
-                    <li>Pedro</li>
-                    <li>一飞</li>
-                    <li>凉面</li>
-                    <li>圈圈</li>
-                    <li>家乐</li>
-                    <li>Jocky</li>
-                    <li>流乔</li>
-                    <li>西麦</li>
-                  </ul>
-                  <ul v-else>
-                    <li>林间有风 CMS 组</li>
-                  </ul>
-                </span>
-              </li>
-              <li>
-                <span class="shadow-box"> <i class="team-shadow"></i> </span> <span class="team-role">设计</span>
-                <span class="team-name">瓜瓜</span>
+                <span class="shadow-box"> <i class="team-shadow"></i> </span> <span class="team-role">贡献</span>
+                <span class="team-name">脑电组成员</span>
               </li>
             </ul>
           </div>
-          <div class="team-icon"><img src="../../assets/image/about/qrcode.jpg" alt="" /></div>
-          <p class="team-label">林间有风公众号</p>
         </div>
       </div>
     </div>

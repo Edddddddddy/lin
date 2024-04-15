@@ -6,7 +6,7 @@ import json
 
 file_api = Blueprint('file', __name__)
 
-UPLOAD_FOLDER = 'static/megData'
+UPLOAD_FOLDER = 'assets/megData'
 
 @file_api.route('/upload', methods=['POST'])
 def upload_file():

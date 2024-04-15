@@ -1,13 +1,13 @@
 import Utils from '@/lin/util/util'
 import adminConfig from './admin'
-import bookConfig from './book' // 引入图书管理路由文件
+// import bookConfig from './book' // 引入图书管理路由文件
 import pluginsConfig from './plugin'
 import megConfig from './meg'
 
 // eslint-disable-next-line import/no-mutable-exports
 let homeRouter = [
   {
-    title: '林间有风',
+    title: '概览',
     type: 'view',
     name: Symbol('about'),
     route: '/about',
@@ -17,18 +17,18 @@ let homeRouter = [
     isElementIcon: false,
     order: 1,
   },
-  {
-    title: '日志管理',
-    type: 'view',
-    name: Symbol('log'),
-    route: '/log',
-    filePath: 'view/log/log.vue',
-    inNav: true,
-    icon: 'iconfont icon-rizhiguanli',
-    isElementIcon: false,
-    order: 2,
-    permission: ['查询所有日志'],
-  },
+  // {
+  //   title: '日志管理',
+  //   type: 'view',
+  //   name: Symbol('log'),
+  //   route: '/log',
+  //   filePath: 'view/log/log.vue',
+  //   inNav: true,
+  //   icon: 'iconfont icon-rizhiguanli',
+  //   isElementIcon: false,
+  //   order: 2,
+  //   permission: ['查询所有日志'],
+  // },
   {
     title: '个人中心',
     type: 'view',
@@ -49,15 +49,15 @@ let homeRouter = [
     icon: 'iconfont icon-rizhiguanli',
     isElementIcon: false,
   },
-  bookConfig,
+  // bookConfig,
   megConfig,
   adminConfig,
 ]
 
 // 接入插件
-const plugins = [...pluginsConfig]
-filterPlugin(homeRouter)
-homeRouter = homeRouter.concat(plugins)
+// const plugins = [...pluginsConfig]
+// filterPlugin(homeRouter)
+// homeRouter = homeRouter.concat(plugins)
 
 // 处理顺序
 homeRouter = Utils.sortByOrder(homeRouter)
@@ -68,24 +68,24 @@ export default homeRouter
 /**
  * 筛除已经被添加的插件
  */
-function filterPlugin(data) {
-  if (plugins.length === 0) {
-    return
-  }
-  if (Array.isArray(data)) {
-    data.forEach(item => {
-      filterPlugin(item)
-    })
-  } else {
-    const findResult = plugins.findIndex(item => data === item)
-    if (findResult >= 0) {
-      plugins.splice(findResult, 1)
-    }
-    if (data.children) {
-      filterPlugin(data.children)
-    }
-  }
-}
+// function filterPlugin(data) {
+//   if (plugins.length === 0) {
+//     return
+//   }
+//   if (Array.isArray(data)) {
+//     data.forEach(item => {
+//       filterPlugin(item)
+//     })
+//   } else {
+//     const findResult = plugins.findIndex(item => data === item)
+//     if (findResult >= 0) {
+//       plugins.splice(findResult, 1)
+//     }
+//     if (data.children) {
+//       filterPlugin(data.children)
+//     }
+//   }
+// }
 
 /**
  * 使用 Symbol 处理 name 字段, 保证唯一性

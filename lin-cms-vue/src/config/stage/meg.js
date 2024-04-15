@@ -1,4 +1,4 @@
-const bookRouter = {
+const megRouter = {
   route: null,
   name: null,
   title: '脑磁数据分析平台',
@@ -24,4 +24,4 @@ const bookRouter = {
   ],
 }
 
-export default bookRouter
+export default megRouter
