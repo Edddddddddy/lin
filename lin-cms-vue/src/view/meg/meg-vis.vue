@@ -9,7 +9,7 @@
         </template>
         <div class="body-container">
           <div class="canvas-container">
-            <canvas ref="canvas" width="800" height="1200"></canvas>
+            <canvas ref="canvasMegVis" width="800" height="1200"></canvas>
           </div>
         </div>
       </el-card>
@@ -153,8 +153,9 @@
 <script>
 // import mapData from './map.json'
 import { ref } from 'vue'
-import { ElTable, ElTableColumn} from 'element-plus'
+import { ElTable, ElTableColumn } from 'element-plus'
 import outputData from './output.json'
+import DSP from 'dsp.js'
 
 export default {
   components: {
@@ -191,6 +192,9 @@ export default {
       intervalId: null,
       isAnimating: true,
       gridSize: 10, // 网格大小
+      dataInterval : ref(1),
+      currentNum : 0,
+
       // brainMapData: null,
       upload: ref(null),
       activeNames: ['fileOpen', 'filter', 'visCheckBox', 'fileTable'],
@@ -205,12 +209,11 @@ export default {
     }
   },
   mounted() {
-    const { canvas } = this.$refs
-    this.ctx = canvas.getContext('2d')
-    canvas.width = this.$el.querySelector('.meg-visualization').clientWidth - 10
-    this.lineData = Array(this.channelCount).fill(0).map(() => Array(100).fill(0))
+    const { canvasMegVis } = this.$refs
+    this.ctx = canvasMegVis.getContext('2d')
+    canvasMegVis.width = this.$el.querySelector('.meg-visualization').clientWidth - 10
+    this.lineData = Array(this.channelCount).fill(0).map(() => Array(0).fill(0))
     this.drawGrid() // 绘制网格
-    this.draw()
     this.intervalId = setInterval(this.draw, 16.67) // 60fps
   },
   methods: {
@@ -237,26 +240,42 @@ export default {
       this.drawGrid() // 每次绘制前重新绘制网格
 
       // 计算每个通道需要多少数据点来填满画布宽度
-      const widthPerDataPoint = ctx.canvas.width / this.channelCount * 2
+      const widthPerDataPoint = ctx.canvas.width / this.dataInterval
 
-      // 遍历每个通道，确保数据点填满画布宽度
-      for (let i = 0; i < this.channelCount; i++) {
-        while (lineData[i].length < widthPerDataPoint) {
+      if ( this.currentNum <= widthPerDataPoint) {
+        for (let i = 0; i < this.channelCount; i++) {
           // 添加随机数据点
           const value = outputData.data[i][time % outputData.data[i].length] * 100
           lineData[i].push(value)
         }
-        // 移除旧数据点
-        lineData[i].shift()
+        this.currentNum += 1
+      }else {
+        for (let i = 0; i < this.channelCount; i++) {
+          // 添加随机数据点
+          const value = outputData.data[i][time % outputData.data[i].length] * 100
+          lineData[i].push(value)
+          lineData[i].shift()
+        }
       }
+
+
 
       // 绘制每个通道的数据
       outputData.channels.forEach((channelName, channelIndex) => {
-        const channelData = lineData[channelIndex]
+        let channelData = []
+        if (this.filterHighEnabled){
+          const b = []
+          const a = []
+          const filter = new DSP.IIRFilter(b, a)
+          channelData = filter.filter(lineData[channelIndex])
+        } else {
+          channelData = lineData[channelIndex]
+        }
+
         ctx.beginPath()
         ctx.strokeStyle = '#00008b' // 深蓝色线条
         channelData.forEach((value, index) => {
-          ctx.lineTo(index * 8, value * 50 + (channelIndex + 0.6) * 50)
+          ctx.lineTo(this.dataInterval * index, value * 50 + (channelIndex + 0.6) * 50)
         })
         ctx.stroke()
         // 绘制通道名称
