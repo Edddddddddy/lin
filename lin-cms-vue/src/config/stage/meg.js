@@ -21,6 +21,16 @@ const megRouter = {
       icon: 'iconfont icon-add',
       isElementIcon: false,
     },
+    {
+      title: '可视化数据分析',
+      type: 'view',
+      name: 'MegVis',
+      route: '/meg/visAnalysis',
+      filePath: 'view/meg/visAnalysis.vue',
+      inNav: true,
+      icon: 'iconfont icon-add',
+      isElementIcon: false,
+    }
   ],
 }
 

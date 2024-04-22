@@ -154,8 +154,8 @@
 // import mapData from './map.json'
 import { ref } from 'vue'
 import { ElTable, ElTableColumn } from 'element-plus'
-import outputData from './output.json'
 import DSP from 'dsp.js'
+import outputData from './output.json'
 
 export default {
   components: {
@@ -192,8 +192,8 @@ export default {
       intervalId: null,
       isAnimating: true,
       gridSize: 10, // 网格大小
-      dataInterval : ref(1),
-      currentNum : 0,
+      dataInterval: ref(1),
+      currentNum: 0,
 
       // brainMapData: null,
       upload: ref(null),
@@ -217,7 +217,6 @@ export default {
     this.intervalId = setInterval(this.draw, 16.67) // 60fps
   },
   methods: {
-
     drawGrid() {
       this.ctx.strokeStyle = '#ccc' // 淡灰色网格
       this.ctx.lineWidth = 0.5
@@ -242,32 +241,36 @@ export default {
       // 计算每个通道需要多少数据点来填满画布宽度
       const widthPerDataPoint = ctx.canvas.width / this.dataInterval
 
-      if ( this.currentNum <= widthPerDataPoint) {
+      if (this.currentNum <= widthPerDataPoint) {
         for (let i = 0; i < this.channelCount; i++) {
           // 添加随机数据点
           const value = outputData.data[i][time % outputData.data[i].length] * 100
           lineData[i].push(value)
         }
         this.currentNum += 1
-      }else {
+      } else {
         for (let i = 0; i < this.channelCount; i++) {
-          // 添加随机数据点
+          // 更新数据
           const value = outputData.data[i][time % outputData.data[i].length] * 100
           lineData[i].push(value)
           lineData[i].shift()
         }
       }
 
-
+      // 滤波器参数
+      const sampleRate = 600
+      const cutoffFrequncy = 5000
+      const filterOrder = 4
 
       // 绘制每个通道的数据
       outputData.channels.forEach((channelName, channelIndex) => {
         let channelData = []
-        if (this.filterHighEnabled){
-          const b = []
-          const a = []
-          const filter = new DSP.IIRFilter(b, a)
-          channelData = filter.filter(lineData[channelIndex])
+        if (this.filterHighEnabled) {
+
+          // const filter = new DSP.IIRFilter('LOWPASS', 200, 44100)
+          //
+          // channelData = filter.process(lineData[channelIndex])
+          // console.log(channelData)
         } else {
           channelData = lineData[channelIndex]
         }
